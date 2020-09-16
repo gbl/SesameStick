@@ -1,0 +1,4 @@
+name: SesameStick
+main: de.guntram.paper.sesamestick.Main
+version: "1.0.0"
+api-version: "1.15"
