@@ -3,8 +3,11 @@ package de.guntram.paper.sesamestick;
 import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Lidded;
+import org.bukkit.block.ShulkerBox;
+import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,8 +43,16 @@ public class Main extends JavaPlugin implements Listener {
             Block block = event.getClickedBlock();
             BlockState state = block.getState();
             if (name.equals(openName)) {
-                ((Lidded) state).open();
                 event.setCancelled(true);
+                if (state instanceof ShulkerBox) {
+                    BlockFace face = ((Directional)state.getBlockData()).getFacing();
+                    Block opensInto = block.getRelative(face);
+                    if (!opensInto.getState().getType().isAir()) {
+                        event.getPlayer().sendMessage("This shulker box is blocked and cannot be opened");
+                        return;
+                    }
+                }
+                ((Lidded) state).open();
             } else if (name.equals(closeName)) {
                 ((Lidded) state).close();
                 event.setCancelled(true);
